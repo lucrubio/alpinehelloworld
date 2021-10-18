@@ -6,6 +6,7 @@ pipeline{
         CONTAINER_NAME = "alpinehelloworld"
         STAGING = "r-luc-ajc-staging"
         PRODUCTION = "r-luc-ajc-production"
+        USERNAME = "lucrubio"
 
     }
 
@@ -52,6 +53,18 @@ pipeline{
                     sh '''
                        docker stop ${CONTAINER_NAME}
                        docker rm ${CONTAINER_NAME}
+                    '''
+                }
+            }
+        }
+
+        stage('Push image to Dockerhub') {
+            agent any
+            steps {
+                script {
+                    sh '''
+                       docker login -u ${USERNAME} -p ${PASSWORD}
+                       docker push ${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
             }
